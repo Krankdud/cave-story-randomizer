@@ -32,7 +32,7 @@ function C:new()
   self.worldGraph = WorldGraph(self.itemDeck)
 end
 
-function C:randomize(path)
+function C:randomize(path, seed)
   resetLog()
   logNotice('=== Cave Story Randomizer v' .. VERSION .. ' ===')
   local success, dirStage = self:_mountDirectory(path)
@@ -40,7 +40,7 @@ function C:randomize(path)
     return "Could not find \"data\" subfolder.\n\nMaybe try dropping your Cave Story \"data\" folder in directly?"
   end
   
-  self:_seedRngesus()
+  self:_seedRngesus(seed)
   local tscFiles = self:_createTscFiles(dirStage)
   -- self:_writePlaintext(tscFiles)
   self:_shuffleItems(tscFiles)
@@ -81,22 +81,8 @@ function C:_mountDirectory(path)
   return true, dirStage
 end
 
-function C:_seedRngesus()
-  local seed = io.open(lf.getSourceBaseDirectory() .. "/seed.txt")
-  if seed == nil then
-    logNotice('Seed from file doesnt exists, generate a new') 
-    seed = tostring(os.time())
-  else
-    logNotice('Gathering the seed from file "seed.txt"')
-    seed = seed:read('*n')
-  end
-  if seed == nil then
-    logWarning('Seed from file is invalid, generate a new') 
-    seed = tostring(os.time())
-  elseif string.len(seed) < 10 then
-    logWarning('Seed is too short, generate a new')
-    seed = tostring(os.time())
-  end
+function C:_seedRngesus(seed)
+  seed = seed or tostring(os.time())
   love.math.setRandomSeed(seed)
   logNotice(('Offering seed "%s" to RNGesus' ):format(seed))
 end

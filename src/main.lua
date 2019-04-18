@@ -41,6 +41,8 @@ end
 resetLog()
 
 local Randomizer = require 'randomizer'
+local Gui = require 'ui'
+local imgui = require 'imgui'
 local background
 local font
 local screen
@@ -55,15 +57,55 @@ function love.load()
   status = "Drag and drop your Cave Story folder here."
 end
 
+function love.update(dt)
+  imgui.NewFrame()
+end
+
+function love.quit()
+  imgui.ShutDown()
+end
+
 function love.directorydropped(path)
   local randomizer = Randomizer()
   status = randomizer:randomize(path)
 end
 
+function love.textinput(t)
+  imgui.TextInput(t)
+end
+
 function love.keypressed(key)
-  if key == 'escape' then
-    love.event.push('quit')
+  imgui.KeyPressed(key)
+  if not imgui.GetWantCaptureKeyboard() then
+    if key == 'escape' then
+      love.event.push('quit')
+    end
   end
+end
+
+function love.keyreleased(key)
+  imgui.KeyReleased(key)
+end
+
+function love.mousemoved(x, y)
+  imgui.MouseMoved(x, y)
+end
+
+function love.mousepressed(x, y, button)
+  imgui.MousePressed(button)
+end
+
+function love.mousereleased(x, y, button)
+  imgui.MouseReleased(button)
+end
+
+function love.wheelmoved(x, y)
+  imgui.WheelMoved(y)
+end
+
+function Gui.onGenerate(seed, path)
+  local randomizer = Randomizer()
+  status = randomizer:randomize(path, seed)
 end
 
 local function _print(text, x, y, align)
@@ -81,10 +123,13 @@ local function _draw()
   _print('Cave Story Randomizer [Open Mode] v' .. VERSION, 0, 10)
   _print('by shru and duncathan', 0, 22)
   _print('(@shruuu and @duncathan_salt)', 0, 34)
-  _print(status, 10, 65)
+  _print(status, 10, 90)
   _print('Original randomizer:\r\nshru.itch.io/cave-story-randomizer', 10, 200, 'left')
 end
 
 function love.draw()
   screen:draw(_draw)
+
+  Gui:render()
+  imgui.Render()
 end
