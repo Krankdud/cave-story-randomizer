@@ -54,7 +54,7 @@ function love.load()
   background = lg.newImage('assets/background.png')
   font = lg.newFont('assets/monogram_extended.ttf', 16)
   font:setFilter('nearest', 'nearest', 1)
-  status = "Drag and drop your Cave Story folder here."
+  status = ""
 end
 
 function love.update(dt)
@@ -66,8 +66,7 @@ function love.quit()
 end
 
 function love.directorydropped(path)
-  local randomizer = Randomizer()
-  status = randomizer:randomize(path)
+  Gui.path = path
 end
 
 function love.textinput(t)

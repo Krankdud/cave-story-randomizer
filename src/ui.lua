@@ -7,6 +7,7 @@ local seed = tostring(os.time())
 local showTestWindow = false
 
 local Gui = {}
+Gui.path = ""
 
 function Gui:render()
   imgui.SetNextWindowPos(40, 100)
@@ -19,7 +20,7 @@ function Gui:render()
   })
 
   imgui.PushItemWidth(-120)
-  path = imgui.InputText("", path, 1024)
+  self.path = imgui.InputText("", self.path, 1024)
   imgui.PopItemWidth()
   imgui.SameLine()
   if imgui.Button("Choose folder") then
@@ -34,7 +35,7 @@ function Gui:render()
   imgui.PopItemWidth()
 
   if imgui.Button("Generate!") and self.onGenerate then
-    self.onGenerate(seed, path)
+    self.onGenerate(seed, self.path)
   end
 
   if showTestWindow then
