@@ -11,14 +11,13 @@ local OPTIONAL_REPLACES = {
 function C:new(path)
   logInfo('reading TSC: ' .. path)
 
-  local file = lf.newFile(path)
-  assert(file:open('r'))
+  local file = io.open(path, 'rb')
+  assert(file)
 
-  local contents, size = file:read()
+  local contents = file:read("*a")
   self._text = self:_codec(contents, 'decode')
 
-  assert(file:close())
-  assert(file:release())
+  file:close()
 
   -- Determine set of items which can be replaced later.
   --[[

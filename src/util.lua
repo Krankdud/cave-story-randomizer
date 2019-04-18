@@ -1,3 +1,6 @@
+local lfs = require "lfs"
+local table = table
+
 local U = {}
 
 -- https://www.lua.org/manual/5.1/manual.html#5.7
@@ -13,6 +16,18 @@ function U.writeFile(path, data)
   file:write(data)
   file:flush()
   file:close()
+end
+
+-- Equivilant of love.filesystem.getDirectoryItems using lfs to get the files
+function U.getDirectoryItems(path)
+  local items = {}
+  for file in lfs.dir(path) do
+    if file ~= "." and file ~= ".." then
+      table.insert(items, file)
+    end
+  end
+
+  return items
 end
 
 return U

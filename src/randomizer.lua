@@ -47,38 +47,33 @@ function C:randomize(path, seed)
   self:_writeModifiedData(tscFiles)
   self:_writePlaintext(tscFiles)
   self:_writeLog()
-  self:_unmountDirectory(path)
   return self:_getStatusMessage()
 end
 
 function C:_mountDirectory(path)
-  local mountPath = 'mounted-data'
-  assert(lf.mount(path, mountPath))
-  local dirStage = '/' .. mountPath
-
-  local items = lf.getDirectoryItems(dirStage)
+  local items = U.getDirectoryItems(path)
   local containsData = _.contains(items, 'data')
   if containsData then
-    dirStage = dirStage .. '/data'
+    path = path .. '/data'
   end
 
   -- For Cave Story+
-  local items = lf.getDirectoryItems(dirStage)
+  local items = U.getDirectoryItems(path)
   local containsBase = _.contains(items, 'base')
   if containsBase then
-    dirStage = dirStage .. '/base'
+    path = path .. '/base'
     self._isCaveStoryPlus = true
   end
 
-  local items = lf.getDirectoryItems(dirStage)
+  local items = U.getDirectoryItems(path)
   local containsStage = _.contains(items, 'Stage')
   if containsStage then
-    dirStage = dirStage .. '/Stage'
+    path = path .. '/Stage'
   else
     return false, ''
   end
 
-  return true, dirStage
+  return true, path
 end
 
 function C:_seedRngesus(seed)
@@ -199,10 +194,6 @@ function C:_getWritePaths()
     mkdir(self._writePathStage)
   end
   return self._writePath, self._writePathStage
-end
-
-function C:_unmountDirectory(path)
-  assert(lf.unmount(path))
 end
 
 function C:_getStatusMessage()
