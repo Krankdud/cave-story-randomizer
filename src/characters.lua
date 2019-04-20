@@ -9,14 +9,14 @@ function Characters:init()
   self.names = {}
   self.selected = 1
 
-  love.filesystem.mount(love.filesystem.getSourceBaseDirectory() .. "/characters", "characters")
-  local files = love.filesystem.getDirectoryItems("characters")
+  love.filesystem.mount(love.filesystem.getSourceBaseDirectory(), "base")
+  local files = love.filesystem.getDirectoryItems("base/characters")
   for _,file in ipairs(files) do
     local name = string.sub(file, 1, -5)
     local character = {
       filename = file
     }
-    local image = love.graphics.newImage("characters/" .. file)
+    local image = love.graphics.newImage("base/characters/" .. file)
     love.graphics.setCanvas(canvas)
     love.graphics.clear()
     love.graphics.draw(image)
