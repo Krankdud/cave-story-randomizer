@@ -42,11 +42,12 @@ resetLog()
 
 local Randomizer = require 'randomizer'
 local Gui = require 'ui'
+local Characters = require 'characters'
+local Config = require 'config'
 local imgui = require 'imgui'
 local background
 local font
 local screen
-local status
 
 function love.load()
   Terebi.initializeLoveDefaults()
@@ -54,7 +55,11 @@ function love.load()
   background = lg.newImage('assets/background.png')
   font = lg.newFont('assets/monogram_extended.ttf', 16)
   font:setFilter('nearest', 'nearest', 1)
-  status = ""
+
+  Config:load()
+  Characters:init()
+  Characters.selected = Config.options.character
+  Gui.path = Config.options.gamePath
 end
 
 function love.update(dt)
@@ -104,7 +109,12 @@ end
 
 function Gui.onGenerate(seed, path)
   local randomizer = Randomizer()
-  status = randomizer:randomize(path, seed)
+  Gui.status = randomizer:randomize(path, seed)
+  Characters:copy()
+
+  Config.options.character = Characters.selected
+  Config.options.gamePath = path
+  Config:save()
 end
 
 local function _print(text, x, y, align)
@@ -122,7 +132,6 @@ local function _draw()
   _print('Cave Story Randomizer [Open Mode] v' .. VERSION, 0, 10)
   _print('by shru and duncathan', 0, 22)
   _print('(@shruuu and @duncathan_salt)', 0, 34)
-  _print(status, 10, 90)
   _print('Original randomizer:\r\nshru.itch.io/cave-story-randomizer', 10, 200, 'left')
 end
 

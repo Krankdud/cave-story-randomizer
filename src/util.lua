@@ -18,6 +18,13 @@ function U.writeFile(path, data)
   file:close()
 end
 
+function U.copyFile(src, dest)
+  local src, err = io.open(src, "rb")
+  assert(err == nil, err)
+  U.writeFile(dest, src:read("*a"))
+  src:close()
+end
+
 -- Equivilant of love.filesystem.getDirectoryItems using lfs to get the files
 function U.getDirectoryItems(path)
   local items = {}

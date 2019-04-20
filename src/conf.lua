@@ -11,7 +11,7 @@ function love.conf(t)
     resizable = false,
   }
   t.version = '11.1'
-  t.console = false
+  t.console = true
   t.identity = 'CaveStoryRandomizer'
   t.accelerometerjoystick = false
   t.gammacorrect = false
